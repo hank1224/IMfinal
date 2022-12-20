@@ -50,7 +50,8 @@ def bind_N_city(event): #北部地區
                     QuickReplyButton(action=MessageAction(label="基隆市", text= replyhead + "基隆市")),
                     QuickReplyButton(action=MessageAction(label="新北市", text= replyhead + "新北市")),
                     QuickReplyButton(action=MessageAction(label="桃園市", text= replyhead + "桃園市")),
-                    QuickReplyButton(action=MessageAction(label="新竹縣", text= replyhead + "新竹縣"))
+                    QuickReplyButton(action=MessageAction(label="新竹縣", text= replyhead + "新竹縣")),
+                    QuickReplyButton(action=MessageAction(label="新竹市", text= replyhead + "新竹市"))
                 ]
             )
         )
@@ -102,6 +103,7 @@ def bind_S_city(event): #南部地區
             quick_reply=QuickReply(
                 items=[ 
                     QuickReplyButton(action=MessageAction(label="嘉義縣", text= replyhead + "嘉義縣")),
+                    QuickReplyButton(action=MessageAction(label="嘉義市", text= replyhead + "嘉義市")),
                     QuickReplyButton(action=MessageAction(label="臺南市", text= replyhead + "臺南市")),
                     QuickReplyButton(action=MessageAction(label="高雄市", text= replyhead + "高雄市")),
                     QuickReplyButton(action=MessageAction(label="屏東縣", text= replyhead + "屏東縣"))
@@ -121,8 +123,7 @@ def bind_Outer_city(event): #離島地區
                 items=[ 
                     QuickReplyButton(action=MessageAction(label="澎湖縣", text= replyhead + "澎湖縣")),
                     QuickReplyButton(action=MessageAction(label="金門縣", text= replyhead + "金門縣")),
-                    #QuickReplyButton(action=MessageAction(label="馬祖縣", text= replyhead + "馬祖縣"))
-                    #氣象局 自動測站沒資料
+                    QuickReplyButton(action=MessageAction(label="連江縣", text= replyhead + "連江縣"))
                 ]
             )
         )
@@ -199,7 +200,7 @@ def chatGPT(event):
         message = ans['choices'][0]['text']
 
         # if str(message).startswith("\n",beg=1,end=10):
-        # 刪除開頭空格
+        # 需要刪除開頭空格
         Line_bot_api.reply_message(event.reply_token, TextSendMessage(text= message))
     except:
         Line_bot_api.reply_message(event.reply_token, TextSendMessage(text='chatGPT err'))
@@ -242,28 +243,31 @@ def callback(request):
                     if mtext == '解除綁定':
                         setCityBlank(event)
 
-                    if str(mtext).startswith('設定用戶地區通知為') == True:
+                    if mtext.startswith('設定用戶地區通知為') == True:
                         insertCity(event)
 
                     if mtext == '選擇北部地區':
                         bind_N_city(event)
 
-                    if str(mtext).startswith('選擇中部地區') == True:
+                    if mtext == '選擇中部地區':
                         bind_W_city(event)
 
-                    if str(mtext).startswith('選擇南部地區') == True:
+                    if mtext == '選擇南部地區':
                         bind_S_city(event)
 
-                    if str(mtext).startswith('選擇離島地區') == True:
+                    if mtext == '選擇東部地區':
+                        bind_E_city(event)
+
+                    if mtext == '選擇離島地區':
                         bind_Outer_city(event)
 
-                    if mtext =='我的ID':
+                    if mtext == '我的ID':
                         try:
                             Line_bot_api.reply_message(event.reply_token, TextSendMessage(text=event.source.user_id))
                         except:
                             Line_bot_api.reply_message(event.reply_token, TextSendMessage(text="Get user_id err"))
                     
-                    if str(mtext).startswith('我想問') == True:
+                    if mtext.startswith('我想問') == True:
                         chatGPT(event)
 
                     else:
