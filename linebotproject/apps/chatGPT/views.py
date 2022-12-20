@@ -38,38 +38,110 @@ def rain_reply(event): #即時時雨量
         message = "lineUser sql err"
 
     Line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
-    
-def bindCity(event): #用戶綁定縣市
+
+def bind_N_city(event): #北部地區
     try:
         replyhead = "設定用戶地區通知為"
         message = TextSendMessage(
-            text= "請選擇一個想收到的地區通知",
+            text= "請選擇一個想收到的縣市通知",
             quick_reply=QuickReply(
-                items=[ #需拆分列表放不下太多
+                items=[ 
                     QuickReplyButton(action=MessageAction(label="臺北市", text= replyhead + "臺北市")),
                     QuickReplyButton(action=MessageAction(label="基隆市", text= replyhead + "基隆市")),
                     QuickReplyButton(action=MessageAction(label="新北市", text= replyhead + "新北市")),
                     QuickReplyButton(action=MessageAction(label="桃園市", text= replyhead + "桃園市")),
-                    QuickReplyButton(action=MessageAction(label="新竹縣", text= replyhead + "新竹縣")),
+                    QuickReplyButton(action=MessageAction(label="新竹縣", text= replyhead + "新竹縣"))
+                ]
+            )
+        )
+        Line_bot_api.reply_message(event.reply_token, message)
+    except:
+        Line_bot_api.reply_message(event.reply_token, TextSendMessage(text="choseCity err"))
 
+def bind_W_city(event): #西部、中部地區
+    try:
+        replyhead = "設定用戶地區通知為"
+        message = TextSendMessage(
+            text= "請選擇一個想收到的縣市通知",
+            quick_reply=QuickReply(
+                items=[ 
                     QuickReplyButton(action=MessageAction(label="苗栗縣", text= replyhead + "苗栗縣")),
                     QuickReplyButton(action=MessageAction(label="臺中市", text= replyhead + "臺中市")),
                     QuickReplyButton(action=MessageAction(label="彰化縣", text= replyhead + "彰化縣")),
                     QuickReplyButton(action=MessageAction(label="南投縣", text= replyhead + "南投縣")),
                     QuickReplyButton(action=MessageAction(label="雲林縣", text= replyhead + "雲林縣")),
+                ]
+            )
+        )
+        Line_bot_api.reply_message(event.reply_token, message)
+    except:
+        Line_bot_api.reply_message(event.reply_token, TextSendMessage(text="choseCity err"))
+        
+def bind_E_city(event): #東部地區
+    try:
+        replyhead = "設定用戶地區通知為"
+        message = TextSendMessage(
+            text= "請選擇一個想收到的縣市通知",
+            quick_reply=QuickReply(
+                items=[ 
+                    QuickReplyButton(action=MessageAction(label="宜蘭縣", text= replyhead + "宜蘭縣")),
+                    QuickReplyButton(action=MessageAction(label="花蓮縣", text= replyhead + "花蓮縣")),
+                    QuickReplyButton(action=MessageAction(label="臺東縣", text= replyhead + "臺東縣")),
+                ]
+            )
+        )
+        Line_bot_api.reply_message(event.reply_token, message)
+    except:
+        Line_bot_api.reply_message(event.reply_token, TextSendMessage(text="choseCity err"))
 
+def bind_S_city(event): #南部地區
+    try:
+        replyhead = "設定用戶地區通知為"
+        message = TextSendMessage(
+            text= "請選擇一個想收到的縣市通知",
+            quick_reply=QuickReply(
+                items=[ 
                     QuickReplyButton(action=MessageAction(label="嘉義縣", text= replyhead + "嘉義縣")),
                     QuickReplyButton(action=MessageAction(label="臺南市", text= replyhead + "臺南市")),
                     QuickReplyButton(action=MessageAction(label="高雄市", text= replyhead + "高雄市")),
-                    #QuickReplyButton(action=MessageAction(label="屏東縣", text= replyhead + "屏東縣")),
+                    QuickReplyButton(action=MessageAction(label="屏東縣", text= replyhead + "屏東縣"))
+                ]
+            )
+        )
+        Line_bot_api.reply_message(event.reply_token, message)
+    except:
+        Line_bot_api.reply_message(event.reply_token, TextSendMessage(text="choseCity err"))
 
-                    #QuickReplyButton(action=MessageAction(label="宜蘭縣", text= replyhead + "宜蘭縣")),
-                    #QuickReplyButton(action=MessageAction(label="花蓮縣", text= replyhead + "花蓮縣")),
-                    #QuickReplyButton(action=MessageAction(label="臺東縣", text= replyhead + "臺東縣")),
-                    
-                    #QuickReplyButton(action=MessageAction(label="澎湖縣", text= replyhead + "澎湖縣")),
-                    #QuickReplyButton(action=MessageAction(label="金門縣", text= replyhead + "金門縣")),
+def bind_Outer_city(event): #離島地區
+    try:
+        replyhead = "設定用戶地區通知為"
+        message = TextSendMessage(
+            text= "請選擇一個想收到的縣市通知",
+            quick_reply=QuickReply(
+                items=[ 
+                    QuickReplyButton(action=MessageAction(label="澎湖縣", text= replyhead + "澎湖縣")),
+                    QuickReplyButton(action=MessageAction(label="金門縣", text= replyhead + "金門縣")),
                     #QuickReplyButton(action=MessageAction(label="馬祖縣", text= replyhead + "馬祖縣"))
+                    #氣象局 自動測站沒資料
+                ]
+            )
+        )
+        Line_bot_api.reply_message(event.reply_token, message)
+    except:
+        Line_bot_api.reply_message(event.reply_token, TextSendMessage(text="choseCity err"))
+
+def bindCity(event): #用戶綁定縣市
+    try:
+        replyhead = "選擇"
+        message = TextSendMessage(
+            text= "請選擇地區",
+            quick_reply=QuickReply(
+                items=[
+                    QuickReplyButton(action=MessageAction(label="北部地區", text= replyhead + "北部地區")),
+                    QuickReplyButton(action=MessageAction(label="中部地區", text= replyhead + "中部地區")),
+                    QuickReplyButton(action=MessageAction(label="南部地區", text= replyhead + "南部地區")),
+                    QuickReplyButton(action=MessageAction(label="東部地區", text= replyhead + "東部地區")),
+                    QuickReplyButton(action=MessageAction(label="離島地區", text= replyhead + "離島地區")),
                 ]
             )
         )
@@ -172,6 +244,18 @@ def callback(request):
 
                     if str(mtext).startswith('設定用戶地區通知為') == True:
                         insertCity(event)
+
+                    if mtext == '選擇北部地區':
+                        bind_N_city(event)
+
+                    if str(mtext).startswith('選擇中部地區') == True:
+                        bind_W_city(event)
+
+                    if str(mtext).startswith('選擇南部地區') == True:
+                        bind_S_city(event)
+
+                    if str(mtext).startswith('選擇離島地區') == True:
+                        bind_Outer_city(event)
 
                     if mtext =='我的ID':
                         try:
