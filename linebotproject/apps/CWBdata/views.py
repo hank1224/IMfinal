@@ -4,8 +4,17 @@ import requests
 from django.db import IntegrityError
 from django.http import HttpResponse
 from django.conf import settings
+from requests import get
+from bs4 import BeautifulSoup
+from linebot.models import MessageEvent, TextSendMessage, TextMessage, QuickReply, QuickReplyButton, MessageAction
+from linebot import LineBotApi, WebhookParser
 
-from CWBdata.models import hazards, rain
+from chatGPT.models import lineUser
+from CWBdata.models import hazards, rain, weather_forecast, rain_pop
+
+Line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
+parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
+
 
 def refresh_hazards():
     url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/W-C0033-001"
@@ -79,7 +88,97 @@ def refresh_rain():
             rain.objects.filter(sCity= City).update(sRAIN= RAIN, sMIN_10= MIN_10, sHOUR_3= HOUR_3, \
                 sHOUR_6= HOUR_6, sHOUR_12= HOUR_12, sHOUR_24= HOUR_24, sNOW= NOW)
 
+
+def refresh_weather_forecast():
+    url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001"
+    res = requests.get(url, {"Authorization": settings.CWB_AUTH})
+    resJson = res.json()
+    
+    
+    locations = resJson["records"]["location"]
+    for locationss in locations:
+        cLocationName = locationss["locationName"]
+        try:
+            cWx = locationss["weatherElement"][0]["time"][2]["parameter"]["parameterName"]  #天氣現象
+            cMinT = locationss["weatherElement"][2]["time"][2]["parameter"]["parameterName"]  #最低溫度
+            cCI = locationss["weatherElement"][3]["time"][2]["parameter"]["parameterName"]  #舒適度
+            cMaxT = locationss["weatherElement"][4]["time"][2]["parameter"]["parameterName"]  #最低溫度
+            
+        except:
+            cWx = None
+            cMinT = None
+            cCI = None
+            cMaxT = None
+
+        try:
+            weather_forecast.objects.create(sLocationName = cLocationName, sWx = cWx, sMinT = cMinT, sCI = cCI, sMaxT = cMaxT)
+        except IntegrityError:
+            weather_forecast.objects.filter(sLocationName = cLocationName).update(sWx = cWx, sMinT = cMinT, sCI = cCI, sMaxT = cMaxT)
+
+
+
+
+def refresh_rainPop():
+    url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001"
+    res = requests.get(url, {"Authorization": settings.CWB_AUTH})
+    resJson = res.json()
+    
+    locations = resJson["records"]["location"]
+    for locationss in locations:
+        cLocationName = locationss["locationName"]
+        try:
+            cPop = locationss["weatherElement"][1]["time"][2]["parameter"]["parameterName"]  #降雨機率
+        except:
+            cPop = None
+        
+        try:
+            rain_pop.objects.create(sLocationName = cLocationName, sPop = cPop)
+        except IntegrityError:
+            rain_pop.objects.filter(sLocationName = cLocationName).update(sPop = cPop)
+
+
+def send_alert(): #發佈警報
+    datasets = hazards.objects.exclude(sPhenomena = None).values()
+    for dataset in datasets:
+        message = ""
+        data1 = str(dataset["sLocationName"])
+        data2 = str(dataset["sPhenomena"])
+        data3 = str(dataset["sStartTime"])
+        data4 = str(dataset["sEndTime"])
+        message += data1 + "已發佈警報或特報:\n天氣現象: " + data2 + "\n發佈時間: " + data3 + "\n結束時間: " + data4
+        
+        
+        querysets = lineUser.objects.filter(sCity = data1).values()
+        if querysets != None:
+            for queryset in querysets:
+                userId = str(queryset["sLineID"])
+                Line_bot_api.push_message(userId, TextSendMessage(text = message))
+    
+    # querysets = lineUser.objects.all().values()
+    # for queryset in querysets:
+    #     userId = str(queryset["sLineID"])
+    #     Line_bot_api.push_message(userId, TextSendMessage(text = message))
+
+
+
+
+def run_alert(requests):
+    send_alert()
+    return HttpResponse(str("Successfully!!"))
+
+
+
+
 def run_CWBapp(requset):
     refresh_hazards()
     refresh_rain()
+    refresh_weather_forecast()
+    refresh_rainPop()
     return HttpResponse(str("510yyds"))
+
+
+
+
+
+
+

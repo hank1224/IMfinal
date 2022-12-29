@@ -14,9 +14,11 @@ Line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
 
 from chatGPT.models import lineUser
-from CWBdata.models import hazards, rain
+from CWBdata.models import hazards, rain, weather_forecast, rain_pop
 
 #Line_bot_api.push_message('Uf496dcee2f5c542148d67e7a2a418a22', TextSendMessage(text=tt.sPhenomena))
+
+
 
 def rain_reply(event): #即時時雨量
     message=""
@@ -38,6 +40,52 @@ def rain_reply(event): #即時時雨量
         message = "lineUser sql err"
 
     Line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
+
+
+
+def weather_forecast_reply(event): #未來兩日預報
+    message=""
+    try:
+        lineUserSet = lineUser.objects.filter(sLineID = event.source.user_id).values('sCity')
+        userCity = str(lineUserSet[0]['sCity'])
+        try:
+            if userCity == "None":
+                    message = "您尚未完成綁定\n請輸入: 綁定地區"
+            else:
+                queryset = weather_forecast.objects.filter(sLocationName = userCity).values()                
+                message = userCity+" 未來兩日天氣預報如下：\n天氣現象: "+str(queryset[0]['sWx'])+"\n最高溫度: "\
+                    +str(queryset[0]['sMaxT'])+"°C\n最低溫度: "+str(queryset[0]['sMinT'])+"°C\n舒適度: "\
+                    +str(queryset[0]['sCI'])
+        except:
+            message = "CWBdata sql err"
+    except:
+        message = "lineUser sql err"
+
+    Line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
+
+    
+    
+def rain_pop_reply(event): #降水預測
+        message=""
+        try:
+            lineUserSet = lineUser.objects.filter(sLineID = event.source.user_id).values('sCity')
+            userCity = str(lineUserSet[0]['sCity'])
+            try:
+                if userCity == "None":
+                        message = "您尚未完成綁定\n請輸入: 綁定地區"
+                else:
+                    queryset = rain_pop.objects.filter(sLocationName = userCity).values()                
+                    message = userCity+" 未來兩天降水預測如下：\n降雨機率: "+str(queryset[0]['sPop'])+"%"
+            except:
+                message = "CWBdata sql err"
+        except:
+            message = "lineUser sql err"
+
+        Line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
+
+
+
+
 
 def bind_N_city(event): #北部地區
     try:
@@ -227,9 +275,9 @@ def callback(request):
                         rain_reply(event)
 
                     if mtext == '@降水預測':
-                        Line_bot_api.reply_message(event.reply_token, TextSendMessage(text="1"))
+                        rain_pop_reply(event)
                     if mtext == '@未來兩日預報':
-                        Line_bot_api.reply_message(event.reply_token, TextSendMessage(text="2"))
+                        weather_forecast_reply(event)
                     if mtext == '@資料來源':
                         Line_bot_api.reply_message(event.reply_token, TextSendMessage(text='中央氣象局提供'))
                     if mtext == '@網站':

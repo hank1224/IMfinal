@@ -20,5 +20,23 @@ class rain(models.Model):
     sHOUR_24 = models.FloatField(null=False, blank=False) #24小時累積雨量，單位 毫米
     sNOW = models.FloatField(null=False, blank=False) #本日累積雨量
     #雨量值為 -998.00 表示 RAIN = MIN_10 = HOUR_3 = HOUR_6 = 0.00
+    
+    
+    
+class weather_forecast(models.Model):
+    sLocationName = models.CharField(max_length=3, null=False, primary_key=True) #所在縣市
+    sWx = models.CharField(max_length=15, null=True)
+    sMinT = models.FloatField(null=False, blank=False)
+    sMaxT = models.FloatField(null=False, blank=False)
+    sCI = models.CharField(max_length=15, null=True)
+    
+    
+    
+class rain_pop(models.Model):
+    sLocationName = models.CharField(max_length=3, null=False, primary_key=True) #所在縣市
+    sPop = models.FloatField(null=False, blank=False)
+
+
+
 
 # Create your models here.

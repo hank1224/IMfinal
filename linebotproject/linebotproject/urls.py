@@ -17,10 +17,11 @@ from django.contrib import admin
 from django.urls import re_path, include
 
 from apps.chatGPT.views import callback
-from apps.CWBdata.views import run_CWBapp
+from apps.CWBdata.views import run_CWBapp, run_alert
 
 urlpatterns = [
     re_path('^callback', callback),
     re_path('admin/', admin.site.urls),
     re_path('CWBdata/', run_CWBapp),
+    re_path('alert/', run_alert),
 ]
