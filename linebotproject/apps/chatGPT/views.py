@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
@@ -15,8 +13,6 @@ parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
 
 from chatGPT.models import lineUser
 from CWBdata.models import hazards, rain, weather_forecast, rain_pop
-
-#Line_bot_api.push_message('Uf496dcee2f5c542148d67e7a2a418a22', TextSendMessage(text=tt.sPhenomena))
 
 
 

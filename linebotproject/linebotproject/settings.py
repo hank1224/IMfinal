@@ -24,10 +24,10 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-e3wt#i@&)h%!7+a*qyj$4+7f^^#=mhz9ly!-oewoqscene^$rk"
-CHAT_GPT_TOKEN = "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"
-LINE_CHANNEL_ACCESS_TOKEN ="1NYB2oHWz+ZfqQOSUoE9/L4LoBZfUEm2VSoFRAyRu9cKYM0U/lxB5kJXOEbnRyNnXbbEiDKNH8TCUCYnq4K9nzb+79+sRt9mkp0lidcazXgrgW5WBnJqhJblzBbYYdHBcDZ5luDBSh29bUmOlnPGCAdB04t89/1O/w1cDnyilFU="
-LINE_CHANNEL_SECRET ="97d12fd27ec0c754a46ac5ced2673929"
-CWB_AUTH = "CWB-E0FDFBDB-626E-4823-948A-190A4C8778F5"
+CHAT_GPT_TOKEN = ""
+LINE_CHANNEL_ACCESS_TOKEN =""
+LINE_CHANNEL_SECRET =""
+CWB_AUTH = ""
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

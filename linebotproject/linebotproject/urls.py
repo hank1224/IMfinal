@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import re_path, include
+from django.urls import re_path
 
 from apps.chatGPT.views import callback
 from apps.CWBdata.views import run_CWBapp, run_alert
